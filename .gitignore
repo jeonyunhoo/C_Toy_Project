@@ -1,0 +1,41 @@
+## Visual Studio 사용자 파일 및 디렉토리
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## 빌드 출력 폴더 (Debug, Release, x64, x86 등)
+[Bb]in/
+[Oo]bj/
+x64/
+x86/
+[Dd]ebug/
+[Rr]elease/
+
+## 컴파일 부산물 및 캐시 파일
+*.aps
+*.ilk
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.VC.opendb
+*.opendb
+*.pch
+*.ipch
+
+## C언어 컴파일 결과물 (실행 파일 및 오브젝트 파일)
+*.exe
+*.dll
+*.lib
+*.obj
+*.exp
+*.pdb
+*.idb
+*.ncb
+
+## 윈도우 시스템 파일
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
