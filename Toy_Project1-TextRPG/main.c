@@ -35,6 +35,16 @@ int main() {
 
 	int goblen_vel = 0;
 
+	const char *item_list[] = {
+		"아이템 1",
+		"아이템 2",
+		"아이템 3"
+	};
+
+	int item_price[] = { 10, 20, 30 };
+
+	int have_item_val[] = { 0,0,0 };
+
 	while (1) {
 
 		START:
@@ -42,6 +52,7 @@ int main() {
 		printf("%d일차\n", day);
 		printf("소지금: %dG\n", money);
 		printf("스테미나: %d\n", stamina);
+		printf("I. 인벤토리 열람");
 		printf("1. 전진(스테미나 -20), 2. 휴식(스테미나 +30)\n");
 		printf("==========================\n");
 
@@ -193,7 +204,7 @@ int main() {
 
 			printf("\n");
 
-		} else { // 휴식
+		} else if(select == '2') { // 휴식
 
 			if (rest_timer == 1) {
 
@@ -217,13 +228,14 @@ int main() {
 
 				printf("==========================\n");
 				printf("상인 등장\n");
-				printf("판매 목록(아직 없음)\n");
+				printf("P: 상품 보기");
+				printf("T: 잡담");
 				printf("R: 가챠(1회 10G) 0~50까지 랜덤한 G획득\n");
 				printf("==========================\n");
 
 				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
-				char draw_btn = _getch();
-				if (draw_btn == 'r' || draw_btn == 'R') {
+				char select = _getch();
+				if (select == 'r' || select == 'R') {
 
 					int get_draw_g = (rand() % 50) + 1;
 					printf(".");
@@ -237,6 +249,43 @@ int main() {
 					Sleep(500);
 					printf("획득한 G: %d\n", get_draw_g);
 					money += get_draw_g;
+				} else if (select == 'p' || select == 'P') {
+
+					int count = sizeof(item_list) / sizeof(item_list[0]);
+					for (int i = 0; i < count; i++) {
+
+						printf("상품 %d: ", i + 1);
+						printf("%s\n", item_list[i]);
+						printf("가격: %d\n", item_price[i]);
+					}
+
+					FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+					int buy_item_num = _getch();
+
+					printf("'%s'상품 선택이 확실하십니까?(Y/N)\n", item_list[buy_item_num - 1]);
+					printf("*'Y'클릭 시 바로 구매됩니다.");
+
+					FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+					select = _getch();
+
+					if (select == 'y' || select == 'Y') {
+
+						if (money < item_price[buy_item_num - 1]) {
+
+							printf("소지금이 부족합니다.");
+							goto START;
+						} else {
+
+							money -= item_price[buy_item_num - 1];
+							have_item_val[buy_item_num - 1] += 1;
+						}
+					} else {
+
+						goto START;
+					}
+				} else {
+
+					printf("대충 잡담\n");
 				}
 
 			} else {
@@ -244,7 +293,7 @@ int main() {
 				printf("아무 일도 일어나지 않았다.\n");
 			}
 
-			if (stamina < 100) {
+			if (stamina < 100) { // 스테미나 추가 및 초기화
 
 				stamina += 30;
 
@@ -254,12 +303,23 @@ int main() {
 				}
 			}
 
+			// 휴식 제약 및 스테미나 부족 처리
 			rest_timer = 1;
 			stamina_leak = 0;
 
 			printf("\n");
+		} else if (select == 'i' || select == 'I') {
+
+			int count = sizeof(item_list) / sizeof(item_list[0]);
+			for (int i = 0; i < count; i++) {
+
+				printf("%d: ", i + 1);
+				printf("%s\n", item_list[i]);
+				printf("소지 수량: %d\n", have_item_val[i]);
+			}
 		}
 
+		// 일수 추가
 		NEXTDAY:
 		day++;
 	}
